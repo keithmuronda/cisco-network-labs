@@ -1,0 +1,47 @@
+! Lab 01 — R1 (Cisco 2811)
+! Captured from the router CLI in Packet Tracer.
+
+! ---- Interface addressing (show ip interface brief) ----
+! Interface           IP-Address      OK? Method Status                Protocol
+! FastEthernet0/0     192.168.10.1    YES manual up                    up
+! FastEthernet0/1     192.168.20.1    YES manual up                    up
+! FastEthernet0/3/0   unassigned      YES unset  up                    up
+! FastEthernet0/3/1   unassigned      YES unset  down                  down
+! FastEthernet0/3/2   unassigned      YES unset  down                  down
+! FastEthernet0/3/3   unassigned      YES unset  down                  down
+! FastEthernet1/0     unassigned      YES unset  administratively down down
+! Vlan1               unassigned      YES unset  administratively down down
+! Vlan30              192.168.30.1    YES manual up                    up
+
+! ---- DHCP ----
+configure terminal
+!
+! Reserve .1-.49 in every subnet for gateways and infrastructure
+ip dhcp excluded-address 192.168.10.1 192.168.10.49
+ip dhcp excluded-address 192.168.20.1 192.168.20.49
+ip dhcp excluded-address 192.168.30.1 192.168.30.49
+!
+ip dhcp pool ADMIN
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.10.2
+!
+ip dhcp pool SALES
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+ dns-server 192.168.10.2
+!
+ip dhcp pool DEV
+ network 192.168.30.0 255.255.255.0
+ default-router 192.168.30.1
+ dns-server 192.168.10.2
+!
+end
+write memory
+
+! ---- Verification (show ip dhcp binding) ----
+! IP address      Client-ID/Hardware address   Lease expiration  Type
+! 192.168.10.11   0000.0C5D.7DD2               --                Automatic
+! 192.168.10.50   0006.2A14.C9A5               --                Automatic
+! 192.168.20.11   0090.0C2E.2DC6               --                Automatic
+! 192.168.30.11   000A.F327.2E5A               --                Automatic
