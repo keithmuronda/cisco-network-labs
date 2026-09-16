@@ -1,0 +1,22 @@
+! Lab 01 — S1 (Cisco 2960-24TT), Admin segment
+! Captured from the switch CLI in Packet Tracer.
+
+enable
+configure terminal
+hostname S1
+!
+! Management address so the switch can be reached, not just pass traffic
+interface vlan 1
+ ip address 192.168.10.10 255.255.255.0
+ no shutdown
+exit
+!
+ip default-gateway 192.168.10.1
+end
+write memory
+
+! ---- Note ----
+! This address collides with the DNS server address used on this segment.
+! The switch logged:
+!   %IP-4-DUPADDR: Duplicate address 192.168.10.10 on Vlan1, sourced by 0006.2A14.C9A5
+! See the README for how this was identified.
